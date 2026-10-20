@@ -38,9 +38,6 @@ export default function Layout({ children }) {
         </div>
       </header>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">{children}</main>
-
-      {/* <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">ProductHub</footer> */}
-
     </div>
   );
 }

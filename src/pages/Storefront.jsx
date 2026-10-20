@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import api from '../lib/api';
 import Loading from '../components/Loading';
 import ProductCard from '../components/ProductCard';
+import EmptyState from '../components/EmptyState';
 
 export default function Storefront() {
   const [search, setSearch] = useState('');
@@ -35,7 +36,9 @@ export default function Storefront() {
         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-center"><p className="font-semibold text-rose-800">Could not load products</p><p className="mt-1 text-sm text-rose-700">{error.userMessage || error.message}</p><button onClick={() => refetch()} className="mt-4 rounded-lg bg-rose-700 px-4 py-2 text-sm font-semibold text-white">Try again</button></div>
       ) : products.length ? (
         <><p className="mb-4 text-sm text-slate-500">{products.length} product{products.length === 1 ? '' : 's'} {isFetching ? '· Updating…' : ''}</p><div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{products.map((p) => <ProductCard key={p.id} product={p}/>)}</div></>
-      ) : <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center text-slate-500">No products found. Try another search.</div>}
+      ) : (
+        <EmptyState message={search ? "No products match your search. Try another query." : "No products available in the catalogue yet."} className="bg-white" />
+      )}
     </div>
   );
 }

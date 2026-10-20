@@ -2,15 +2,23 @@
  * AdminProducts — Full product management:
  *   • Create (with image, duplicate check)
  *   • View  (read-only modal with full details)
- *   • Edit  (full form modal, image optional)
+ *   • Edit  (full form inline with image preview & replacement)
  *   • Delete single (custom confirm modal)
  *   • Delete all   (custom confirm modal, calls DELETE /products/all)
  */
 import { useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  Package, ImagePlus, Plus, Trash2, Pencil, Eye,
-  AlertTriangle, AlertCircle, Search, X, Check,
+  Package,
+  ImagePlus,
+  Plus,
+  Trash2,
+  Pencil,
+  Eye,
+  AlertTriangle,
+  AlertCircle,
+  Search,
+  Check,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api, { getErrorMessage } from '../../lib/api';
@@ -18,21 +26,42 @@ import { imageUrl } from '../../components/ProductCard';
 import Loading from '../../components/Loading';
 import Modal from '../../components/Modal';
 import ConfirmModal from '../../components/ConfirmModal';
+import PageHeader from '../../components/PageHeader';
+import FormCard from '../../components/FormCard';
+import StockBadge from '../../components/StockBadge';
+import EmptyState from '../../components/EmptyState';
 
 const EMPTY = { name: '', brandId: '', categoryId: '', price: '', stock: '0', description: '' };
 
-/* ── small helper: image upload label ───────────────────────────────────────── */
+/* ── Image Upload Box ─────────────────────────────────────────────────────── */
 function ImageUploadArea({ image, preview, onChange, optional = false }) {
   return (
     <label className="block cursor-pointer">
-      <div className={`rounded-xl border-2 border-dashed p-4 text-center transition hover:border-indigo-400 hover:bg-indigo-50/30 ${image ? 'border-indigo-300 bg-indigo-50/20' : 'border-slate-300'}`}>
-        {preview
-          ? <img src={preview} alt="Preview" className="mx-auto mb-2 h-24 rounded-lg object-contain" />
-          : <ImagePlus className="mx-auto mb-2 text-slate-300" size={28} />}
-        <p className="text-sm font-semibold text-slate-700">{image ? image.name : `Choose image${optional ? ' (optional)' : ' *'}`}</p>
+      <div
+        className={`rounded-xl border-2 border-dashed p-4 text-center transition hover:border-indigo-400 hover:bg-indigo-50/30 ${
+          image ? 'border-indigo-300 bg-indigo-50/20' : 'border-slate-300'
+        }`}
+      >
+        {preview ? (
+          <img
+            src={preview}
+            alt="Preview"
+            className="mx-auto mb-2 h-24 rounded-lg object-contain"
+          />
+        ) : (
+          <ImagePlus className="mx-auto mb-2 text-slate-300" size={28} />
+        )}
+        <p className="text-sm font-semibold text-slate-700">
+          {image ? image.name : `Choose image${optional ? ' (optional)' : ' *'}`}
+        </p>
         <p className="mt-0.5 text-xs text-slate-400">JPEG, PNG, WEBP, GIF · Max 5 MB</p>
       </div>
-      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={onChange} />
+      <input
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="sr-only"
+        onChange={onChange}
+      />
     </label>
   );
 }
@@ -41,18 +70,16 @@ export default function AdminProducts() {
   const qc = useQueryClient();
   const formRef = useRef(null);
 
-  /* ── Form state (for Create & Update) ─────────────────────── */
+  /* ── Form state ───────────────────────────────────────────── */
   const [form, setForm] = useState(EMPTY);
   const [image, setImage] = useState(null);
   const preview = useMemo(() => (image ? URL.createObjectURL(image) : null), [image]);
-
   const [editingProduct, setEditingProduct] = useState(null);
 
-  /* ── View / Delete state ─────────────────────────────────── */
+  /* ── Modals & Filter state ─────────────────────────────────── */
   const [viewProduct, setViewProduct] = useState(null);
   const [deletingProduct, setDeletingProduct] = useState(null);
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
-
   const [search, setSearch] = useState('');
 
   /* ── Queries ───────────────────────────────────────────────── */
@@ -60,8 +87,14 @@ export default function AdminProducts() {
     queryKey: ['admin', 'products'],
     queryFn: async () => (await api.get('/products?includeInactive=true')).data.data,
   });
-  const brandsQ = useQuery({ queryKey: ['brands'], queryFn: async () => (await api.get('/brands')).data.data });
-  const categoriesQ = useQuery({ queryKey: ['categories'], queryFn: async () => (await api.get('/categories')).data.data });
+  const brandsQ = useQuery({
+    queryKey: ['brands'],
+    queryFn: async () => (await api.get('/brands')).data.data,
+  });
+  const categoriesQ = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => (await api.get('/categories')).data.data,
+  });
 
   const filtered = useMemo(() => {
     const s = search.toLowerCase();
@@ -119,7 +152,10 @@ export default function AdminProducts() {
       qc.invalidateQueries({ queryKey: ['admin', 'products'] });
       qc.invalidateQueries({ queryKey: ['products'] });
     },
-    onError: (err) => { toast.error(getErrorMessage(err)); setDeletingProduct(null); },
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
+      setDeletingProduct(null);
+    },
   });
 
   const deleteAllMut = useMutation({
@@ -133,7 +169,10 @@ export default function AdminProducts() {
       qc.invalidateQueries({ queryKey: ['admin', 'products'] });
       qc.invalidateQueries({ queryKey: ['products'] });
     },
-    onError: (err) => { toast.error(getErrorMessage(err)); setConfirmDeleteAll(false); },
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
+      setConfirmDeleteAll(false);
+    },
   });
 
   /* ── Handlers ──────────────────────────────────────────────── */
@@ -173,107 +212,158 @@ export default function AdminProducts() {
     } else {
       if (!image) return toast.error('Please choose a product image.');
       if (image.size > 5 * 1024 * 1024) return toast.error('Image must be ≤ 5 MB.');
-      const dup = (productsQ.data || []).some((p) => p.name.toLowerCase() === trimmedName.toLowerCase());
+      const dup = (productsQ.data || []).some(
+        (p) => p.name.toLowerCase() === trimmedName.toLowerCase()
+      );
       if (dup) return toast.error(`Product "${trimmedName}" already exists.`);
       createMut.mutate();
     }
   };
 
-  const BrandCatSelects = ({ f, onChange, brands, categories }) => (
-    <div className="grid grid-cols-2 gap-3">
-      <div>
-        <label className="block text-sm font-semibold text-slate-700">Brand <span className="text-rose-500">*</span></label>
-        <select name="brandId" required value={f.brandId} onChange={onChange}
-          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500">
-          <option value="">Select brand</option>
-          {(brands || []).map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-        </select>
-      </div>
-      <div>
-        <label className="block text-sm font-semibold text-slate-700">Category <span className="text-rose-500">*</span></label>
-        <select name="categoryId" required value={f.categoryId} onChange={onChange}
-          className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500">
-          <option value="">Select category</option>
-          {(categories || []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>
-      </div>
-    </div>
-  );
-
   return (
     <div>
-      <div className="mb-6">
-        <p className="text-xs font-bold uppercase tracking-[.2em] text-indigo-500">Catalogue</p>
-        <h1 className="mt-1 text-2xl font-black text-slate-900">Products</h1>
-
-      </div>
+      <PageHeader badge="Catalogue" title="Products" />
 
       <div className="grid gap-6 xl:grid-cols-[380px_1fr]">
-        {/* ── Add / Edit form (reused on page) ─────────────── */}
-        <div ref={formRef} className={`h-fit rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 ${editingProduct ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200'
-          }`}>
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className={`rounded-xl p-2.5 transition ${editingProduct ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-600'
-                }`}>
-                {editingProduct ? <Pencil size={18} /> : <Package size={18} />}
-              </span>
-              <div>
-                <h2 className="font-bold text-slate-900">
-                  {editingProduct ? 'Edit Product' : 'Add Product'}
-                </h2>
-                <p className="text-xs text-slate-400">
-                  {editingProduct ? `Editing: ${editingProduct.name}` : 'Fields marked * are required.'}
-                </p>
-              </div>
-            </div>
-
-            {editingProduct && (
-              <button
-                type="button"
-                onClick={handleCancelEdit}
-                className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600 transition hover:bg-slate-100"
-                title="Cancel update and add a new product"
-              >
-                <Plus size={13} /> New Product
-              </button>
-            )}
-          </div>
-
+        {/* ── Add / Edit Form Card ─────────────────────────── */}
+        <FormCard
+          ref={formRef}
+          isEditing={Boolean(editingProduct)}
+          defaultIcon={Package}
+          editIcon={Pencil}
+          title="Add Product"
+          editTitle="Edit Product"
+          subtitle="Fields marked * are required."
+          editSubtitle={`Editing: ${editingProduct?.name}`}
+          onCancelEdit={handleCancelEdit}
+          cancelLabel="New Product"
+        >
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700">Product Name <span className="text-rose-500">*</span></label>
-              <input name="name" required minLength={2} maxLength={180} value={form.name} onChange={updateField}
+              <label className="block text-sm font-semibold text-slate-700">
+                Product Name <span className="text-rose-500">*</span>
+              </label>
+              <input
+                name="name"
+                required
+                minLength={2}
+                maxLength={180}
+                value={form.name}
+                onChange={updateField}
                 placeholder="Enter product name…"
-                className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-            </div>
-            <BrandCatSelects f={form} onChange={updateField} brands={brandsQ.data} categories={categoriesQ.data} />
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700">Price (₹) <span className="text-rose-500">*</span></label>
-                <input name="price" type="number" min="0" step="0.01" required value={form.price} onChange={updateField}
-                  placeholder="0.00" className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700">Stock <span className="text-rose-500">*</span></label>
-                <input name="stock" type="number" min="0" step="1" required value={form.stock} onChange={updateField}
-                  placeholder="0" className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700">Description <span className="text-rose-500">*</span></label>
-              <textarea name="description" required minLength={2} rows={3} value={form.description} onChange={updateField}
-                placeholder="Describe the product…"
-                className="mt-1.5 w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
+                className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+              />
             </div>
 
-            {/* Current image preview when editing and no new image chosen yet */}
+            {/* Brand & Category row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Brand <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  name="brandId"
+                  required
+                  value={form.brandId}
+                  onChange={updateField}
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500"
+                >
+                  <option value="">Select brand</option>
+                  {(brandsQ.data || []).map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Category <span className="text-rose-500">*</span>
+                </label>
+                <select
+                  name="categoryId"
+                  required
+                  value={form.categoryId}
+                  onChange={updateField}
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500"
+                >
+                  <option value="">Select category</option>
+                  {(categoriesQ.data || []).map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Price & Stock row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Price (₹) <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  name="price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  required
+                  value={form.price}
+                  onChange={updateField}
+                  placeholder="0.00"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700">
+                  Stock <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  name="stock"
+                  type="number"
+                  min="0"
+                  step="1"
+                  required
+                  value={form.stock}
+                  onChange={updateField}
+                  placeholder="0"
+                  className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700">
+                Description <span className="text-rose-500">*</span>
+              </label>
+              <textarea
+                name="description"
+                required
+                minLength={2}
+                rows={3}
+                value={form.description}
+                onChange={updateField}
+                placeholder="Describe the product…"
+                className="mt-1.5 w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+              />
+            </div>
+
+            {/* Current image preview when editing without new file selected */}
             {editingProduct?.imagePath && !image && (
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <p className="mb-1.5 text-xs font-semibold text-slate-500">Current product image</p>
                 <div className="flex items-center gap-3">
-                  <img src={imageUrl(editingProduct.imagePath)} alt="" className="h-16 w-16 rounded-lg object-contain bg-white border border-slate-200" />
-                  <p className="text-xs text-slate-400">Upload a new image below to replace it, or leave empty to keep current.</p>
+                  <img
+                    src={imageUrl(editingProduct.imagePath)}
+                    alt=""
+                    className="h-16 w-16 rounded-lg object-contain bg-white border border-slate-200"
+                  />
+                  <p className="text-xs text-slate-400">
+                    Upload a new image below to replace it, or leave empty to keep current.
+                  </p>
                 </div>
               </div>
             )}
@@ -300,7 +390,7 @@ export default function AdminProducts() {
                   className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-700 disabled:opacity-50"
                 >
                   <Check size={16} />
-                  {updateMut.isPending ? 'Updating…' : 'Update  Product'}
+                  {updateMut.isPending ? 'Updating…' : 'Update Product'}
                 </button>
               </div>
             ) : (
@@ -314,10 +404,10 @@ export default function AdminProducts() {
               </button>
             )}
           </form>
-        </div>
+        </FormCard>
 
-        {/* ── Product list ─────────────────────────────── */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        {/* ── Product List Table ───────────────────────────── */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <h2 className="font-bold text-slate-900">All Products</h2>
@@ -325,153 +415,218 @@ export default function AdminProducts() {
                 {productsQ.data?.length || 0} items
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2">
+
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="flex flex-1 sm:flex-initial items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 bg-slate-50/50 focus-within:bg-white focus-within:border-indigo-400">
                 <Search size={14} className="text-slate-400" />
-                <input value={search} onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search…"
-                  className="w-32 bg-transparent text-sm outline-none placeholder:text-slate-400" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search products…"
+                  className="w-full sm:w-36 bg-transparent text-sm outline-none placeholder:text-slate-400"
+                />
               </label>
               {(productsQ.data?.length || 0) > 0 && (
-                <button onClick={() => setConfirmDeleteAll(true)}
-                  className="flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-600 transition hover:bg-rose-100">
+                <button
+                  onClick={() => setConfirmDeleteAll(true)}
+                  className="flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-600 transition hover:bg-rose-100"
+                >
                   <AlertTriangle size={13} /> Delete All
                 </button>
               )}
             </div>
           </div>
 
-          {productsQ.isPending ? <Loading label="Loading products…" /> :
-            productsQ.isError ? (
-              <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
-                <AlertCircle size={16} />{getErrorMessage(productsQ.error)}
-                <button onClick={() => productsQ.refetch()} className="ml-2 font-bold underline">Retry</button>
-              </div>
-            ) : !filtered.length ? (
-              <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">
-                {search ? 'No products match your search.' : 'No products yet. Add your first product using the form.'}
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[580px] text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
-                      <th className="pb-3 pr-4 text-left font-semibold">Product</th>
-                      <th className="pb-3 pr-3 text-left font-semibold">Brand</th>
-                      <th className="pb-3 pr-3 text-left font-semibold">Price</th>
-                      <th className="pb-3 pr-3 text-left font-semibold">Stock</th>
-                      <th className="pb-3 text-right font-semibold">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {filtered.map((p) => {
-                      const isSelected = editingProduct?.id === p.id;
-                      return (
-                        <tr
-                          key={p.id}
-                          className={`transition ${isSelected
-                              ? 'bg-amber-50/70 ring-1 ring-inset ring-amber-300'
-                              : 'hover:bg-slate-50/60'
-                            }`}
-                        >
-                          <td className="py-3 pr-4">
-                            <div className="flex items-center gap-3">
-                              <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-slate-100">
-                                {p.imagePath
-                                  ? <img src={imageUrl(p.imagePath)} alt={p.name} className="h-full w-full object-cover" />
-                                  : <div className="flex h-full w-full items-center justify-center text-slate-300"><Package size={18} /></div>}
-                              </div>
-                              <div>
-                                <p className="max-w-[160px] truncate font-semibold text-slate-800">{p.name}</p>
-                                <p className="text-xs text-slate-400">{p.sku}</p>
-                              </div>
+          {productsQ.isPending ? (
+            <Loading label="Loading products…" />
+          ) : productsQ.isError ? (
+            <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
+              <AlertCircle size={16} />
+              {getErrorMessage(productsQ.error)}
+              <button onClick={() => productsQ.refetch()} className="ml-2 font-bold underline">
+                Retry
+              </button>
+            </div>
+          ) : !filtered.length ? (
+            <EmptyState
+              message={
+                search
+                  ? 'No products match your search.'
+                  : 'No products yet. Add your first product using the form.'
+              }
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[580px] text-sm">
+                <thead>
+                  <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+                    <th className="pb-3 pr-4 text-left font-semibold">Product</th>
+                    <th className="pb-3 pr-3 text-left font-semibold">Brand</th>
+                    <th className="pb-3 pr-3 text-left font-semibold">Price</th>
+                    <th className="pb-3 pr-3 text-left font-semibold">Stock</th>
+                    <th className="pb-3 text-right font-semibold">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {filtered.map((p) => {
+                    const isSelected = editingProduct?.id === p.id;
+                    return (
+                      <tr
+                        key={p.id}
+                        className={`transition ${
+                          isSelected
+                            ? 'bg-amber-50/70 ring-1 ring-inset ring-amber-300'
+                            : 'hover:bg-slate-50/60'
+                        }`}
+                      >
+                        <td className="py-3 pr-4">
+                          <div className="flex items-center gap-3">
+                            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                              {p.imagePath ? (
+                                <img
+                                  src={imageUrl(p.imagePath)}
+                                  alt={p.name}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-slate-300">
+                                  <Package size={18} />
+                                </div>
+                              )}
                             </div>
-                          </td>
-                          <td className="py-3 pr-3 text-slate-600">{p.brand?.name || '—'}</td>
-                          <td className="py-3 pr-3 font-semibold text-slate-800">₹{Number(p.price).toLocaleString('en-IN')}</td>
-                          <td className="py-3 pr-3">
-                            <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${Number(p.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                              }`}>
-                              {Number(p.stock) > 0 ? p.stock : 'Out'}
-                            </span>
-                          </td>
-                          <td className="py-3 text-right">
-                            <div className="flex items-center justify-end gap-1">
-                              <button onClick={() => setViewProduct(p)}
-                                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label="View">
-                                <Eye size={15} />
-                              </button>
-                              <button
-                                onClick={() => handleStartEdit(p)}
-                                className={`rounded-lg p-2 transition ${isSelected
-                                    ? 'bg-amber-500 text-white shadow-sm'
-                                    : 'text-indigo-500 hover:bg-indigo-50'
-                                  }`}
-                                aria-label="Edit"
-                                title="Edit in form"
-                              >
-                                <Pencil size={15} />
-                              </button>
-                              <button onClick={() => setDeletingProduct(p)}
-                                className="rounded-lg p-2 text-rose-500 hover:bg-rose-50" aria-label="Delete">
-                                <Trash2 size={15} />
-                              </button>
+                            <div className="min-w-0">
+                              <p className="max-w-[160px] truncate font-semibold text-slate-800">
+                                {p.name}
+                              </p>
+                              <p className="text-xs text-slate-400">{p.sku}</p>
                             </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                          </div>
+                        </td>
+                        <td className="py-3 pr-3 text-slate-600">{p.brand?.name || '—'}</td>
+                        <td className="py-3 pr-3 font-semibold text-slate-800">
+                          ₹{Number(p.price).toLocaleString('en-IN')}
+                        </td>
+                        <td className="py-3 pr-3">
+                          <StockBadge stock={p.stock} outLabel="Out" />
+                        </td>
+                        <td className="py-3 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={() => setViewProduct(p)}
+                              className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 transition"
+                              aria-label="View product"
+                              title="View details"
+                            >
+                              <Eye size={15} />
+                            </button>
+                            <button
+                              onClick={() => handleStartEdit(p)}
+                              className={`rounded-lg p-2 transition ${
+                                isSelected
+                                  ? 'bg-amber-500 text-white shadow-sm'
+                                  : 'text-indigo-500 hover:bg-indigo-50'
+                              }`}
+                              aria-label={`Edit ${p.name}`}
+                              title="Edit in form"
+                            >
+                              <Pencil size={15} />
+                            </button>
+                            <button
+                              onClick={() => setDeletingProduct(p)}
+                              className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 transition"
+                              aria-label={`Delete ${p.name}`}
+                              title="Delete product"
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 
       {/* ── View Product Modal ─────────────────────────── */}
-      <Modal open={!!viewProduct} onClose={() => setViewProduct(null)} title="Product Details" size="lg">
+      <Modal
+        open={Boolean(viewProduct)}
+        onClose={() => setViewProduct(null)}
+        title="Product Details"
+        size="lg"
+      >
         {viewProduct && (
-          <div className="grid gap-5 sm:grid-cols-[160px_1fr]">
-            <div className="overflow-hidden rounded-xl bg-slate-100">
-              {viewProduct.imagePath
-                ? <img src={imageUrl(viewProduct.imagePath)} alt={viewProduct.name} className="h-full w-full object-cover" />
-                : <div className="flex h-40 items-center justify-center text-slate-300"><Package size={40} /></div>}
+          <div className="grid gap-5 grid-cols-1 sm:grid-cols-[160px_1fr]">
+            <div className="overflow-hidden rounded-xl bg-slate-100 flex items-center justify-center">
+              {viewProduct.imagePath ? (
+                <img
+                  src={imageUrl(viewProduct.imagePath)}
+                  alt={viewProduct.name}
+                  className="h-full max-h-48 w-full object-contain sm:object-cover"
+                />
+              ) : (
+                <div className="flex h-40 items-center justify-center text-slate-300">
+                  <Package size={40} />
+                </div>
+              )}
             </div>
-            <div className="space-y-3">
+
+            <div className="space-y-3 min-w-0">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Name</p>
                 <p className="mt-0.5 text-lg font-black text-slate-900">{viewProduct.name}</p>
               </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Brand</p>
-                  <p className="mt-0.5 text-sm font-semibold text-slate-700">{viewProduct.brand?.name || '—'}</p>
+                  <p className="mt-0.5 text-sm font-semibold text-slate-700">
+                    {viewProduct.brand?.name || '—'}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Category</p>
-                  <p className="mt-0.5 text-sm font-semibold text-slate-700">{viewProduct.category?.name || '—'}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    Category
+                  </p>
+                  <p className="mt-0.5 text-sm font-semibold text-slate-700">
+                    {viewProduct.category?.name || '—'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Price</p>
-                  <p className="mt-0.5 text-sm font-black text-indigo-700">₹{Number(viewProduct.price).toLocaleString('en-IN')}</p>
+                  <p className="mt-0.5 text-sm font-black text-indigo-700">
+                    ₹{Number(viewProduct.price).toLocaleString('en-IN')}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Stock</p>
-                  <span className={`mt-0.5 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${Number(viewProduct.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                    }`}>
-                    {Number(viewProduct.stock) > 0 ? `${viewProduct.stock} units` : 'Out of stock'}
-                  </span>
+                  <div className="mt-0.5">
+                    <StockBadge
+                      stock={viewProduct.stock}
+                      suffix="units"
+                      outLabel="Out of stock"
+                    />
+                  </div>
                 </div>
               </div>
+
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">SKU</p>
                 <p className="mt-0.5 font-mono text-xs text-slate-500">{viewProduct.sku}</p>
               </div>
             </div>
+
             {viewProduct.description && (
-              <div className="sm:col-span-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Description</p>
-                <p className="mt-1 text-sm leading-relaxed text-slate-700">{viewProduct.description}</p>
+              <div className="sm:col-span-2 border-t border-slate-100 pt-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  Description
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-700">
+                  {viewProduct.description}
+                </p>
               </div>
             )}
           </div>
@@ -480,7 +635,7 @@ export default function AdminProducts() {
 
       {/* ── Delete single Confirm Modal ───────────────── */}
       <ConfirmModal
-        open={!!deletingProduct}
+        open={Boolean(deletingProduct)}
         onClose={() => setDeletingProduct(null)}
         onConfirm={() => deleteMut.mutate(deletingProduct.id)}
         title="Delete Product?"
@@ -495,7 +650,9 @@ export default function AdminProducts() {
         onClose={() => setConfirmDeleteAll(false)}
         onConfirm={() => deleteAllMut.mutate()}
         title="Delete ALL Products?"
-        message={`All ${productsQ.data?.length || 0} products and their images will be permanently removed. This CANNOT be undone.`}
+        message={`All ${
+          productsQ.data?.length || 0
+        } products and their images will be permanently removed. This CANNOT be undone.`}
         confirmLabel="Yes, Delete All"
         variant="warning"
         loading={deleteAllMut.isPending}

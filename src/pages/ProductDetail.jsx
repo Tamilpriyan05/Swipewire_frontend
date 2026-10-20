@@ -22,8 +22,8 @@ export default function ProductDetail() {
         <div className="min-h-72 bg-slate-100 rounded-xl"><img src={imageUrl(product.imagePath)} alt={product.name} className="h-full max-h-[600px] w-full rounded-xl object-cover"/></div>
         <div className="p-6 sm:p-10">
           <p className="text-xs font-bold uppercase tracking-[.2em] text-indigo-600">{product.brand?.name} · {product.category?.name}</p>
-          <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900">{product.name}</h1>
-          <p className="mt-4 text-3xl font-bold text-slate-900">₹{Number(product.price).toLocaleString('en-IN')}</p>
+          <h1 className="mt-3 text-xl sm:text-3xl font-black tracking-tight text-slate-900">{product.name}</h1>
+          <p className="mt-4 text-xl sm:text-3xl font-bold text-slate-900">₹{Number(product.price).toLocaleString('en-IN')}</p>
           <div className={`mt-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold ${Number(product.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}><PackageCheck size={16}/>{Number(product.stock) > 0 ? `${product.stock} in stock` : 'Out of stock'}</div>
           <h2 className="mt-8 font-bold">Description</h2>
           <p className="mt-2 whitespace-pre-line text-sm leading-7 text-slate-600">{product.description}</p>

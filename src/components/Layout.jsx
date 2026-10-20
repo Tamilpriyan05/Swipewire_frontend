@@ -17,7 +17,9 @@ export default function Layout({ children }) {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2 font-bold tracking-tight text-slate-900">
             <span className="rounded-xl bg-indigo-600 p-2 text-white"><Boxes size={20} /></span>
-            <span>Product<span className="text-indigo-600">Hub</span></span>
+          <span className="hidden sm:inline">
+      Product<span className="text-indigo-600">Hub</span>
+    </span>
           </Link>
           <nav className="flex items-center gap-3 text-sm font-semibold">
             <NavLink to="/" end className={({ isActive }) => isActive ? 'text-indigo-700' : 'text-slate-600 hover:text-slate-900'}>Store</NavLink>

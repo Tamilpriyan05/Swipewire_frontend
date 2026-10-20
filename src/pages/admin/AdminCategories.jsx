@@ -119,19 +119,17 @@ export default function AdminCategories() {
       <div className="mb-6">
         <p className="text-xs font-bold uppercase tracking-[.2em] text-indigo-500">Catalogue</p>
         <h1 className="mt-1 text-2xl font-black text-slate-900">Categories</h1>
-        <p className="mt-1 text-sm text-slate-400">Organise products into categories. Duplicate names are not allowed.</p>
+
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         {/* ── Add / Edit form (reused on page) ─────────────── */}
-        <div ref={formRef} className={`h-fit rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 ${
-          editingCategory ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200'
-        }`}>
+        <div ref={formRef} className={`h-fit rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 ${editingCategory ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200'
+          }`}>
           <div className="mb-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className={`rounded-xl p-2.5 transition ${
-                editingCategory ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-600'
-              }`}>
+              <span className={`rounded-xl p-2.5 transition ${editingCategory ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-600'
+                }`}>
                 {editingCategory ? <Pencil size={18} /> : <Layers size={18} />}
               </span>
               <div>
@@ -225,63 +223,61 @@ export default function AdminCategories() {
           </div>
 
           {categoriesQ.isPending ? <Loading label="Loading categories…" /> :
-          categoriesQ.isError ? (
-            <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
-              <AlertCircle size={16} />{getErrorMessage(categoriesQ.error)}
-            </div>
-          ) : !categoriesQ.data?.length ? (
-            <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">
-              No categories yet. Add your first category using the form.
-            </div>
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {categoriesQ.data.map((cat, i) => {
-                const isSelected = editingCategory?.id === cat.id;
-                return (
-                  <div
-                    key={cat.id}
-                    className={`group relative flex flex-col rounded-xl border p-4 transition ${
-                      isSelected
-                        ? 'border-amber-300 bg-amber-50/60 ring-2 ring-amber-200'
-                        : 'border-slate-100 bg-slate-50 hover:border-indigo-100 hover:bg-indigo-50/30'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <span className={`rounded-lg px-2.5 py-1 text-xs font-bold ${ACCENT[i % ACCENT.length]}`}>
-                          {cat.name.substring(0, 2).toUpperCase()}
-                        </span>
-                        <span className="font-semibold text-slate-800">{cat.name}</span>
+            categoriesQ.isError ? (
+              <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
+                <AlertCircle size={16} />{getErrorMessage(categoriesQ.error)}
+              </div>
+            ) : !categoriesQ.data?.length ? (
+              <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">
+                No categories yet. Add your first category using the form.
+              </div>
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {categoriesQ.data.map((cat, i) => {
+                  const isSelected = editingCategory?.id === cat.id;
+                  return (
+                    <div
+                      key={cat.id}
+                      className={`group relative flex flex-col rounded-xl border p-4 transition ${isSelected
+                          ? 'border-amber-300 bg-amber-50/60 ring-2 ring-amber-200'
+                          : 'border-slate-100 bg-slate-50 hover:border-indigo-100 hover:bg-indigo-50/30'
+                        }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2.5">
+                          <span className={`rounded-lg px-2.5 py-1 text-xs font-bold ${ACCENT[i % ACCENT.length]}`}>
+                            {cat.name.substring(0, 2).toUpperCase()}
+                          </span>
+                          <span className="font-semibold text-slate-800">{cat.name}</span>
+                        </div>
+                        <div className={`flex shrink-0 items-center gap-0.5 transition ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                          <button onClick={() => setViewCat(cat)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-200" aria-label="View">
+                            <Eye size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleStartEdit(cat)}
+                            className={`rounded-lg p-1.5 transition ${isSelected
+                                ? 'bg-amber-500 text-white shadow-sm'
+                                : 'text-indigo-500 hover:bg-indigo-100'
+                              }`}
+                            aria-label="Edit"
+                            title="Edit in form"
+                          >
+                            <Pencil size={14} />
+                          </button>
+                          <button onClick={() => setDeletingCat(cat)} className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-100" aria-label="Delete">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </div>
-                      <div className={`flex shrink-0 items-center gap-0.5 transition ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                        <button onClick={() => setViewCat(cat)} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-200" aria-label="View">
-                          <Eye size={14} />
-                        </button>
-                        <button
-                          onClick={() => handleStartEdit(cat)}
-                          className={`rounded-lg p-1.5 transition ${
-                            isSelected
-                              ? 'bg-amber-500 text-white shadow-sm'
-                              : 'text-indigo-500 hover:bg-indigo-100'
-                          }`}
-                          aria-label="Edit"
-                          title="Edit in form"
-                        >
-                          <Pencil size={14} />
-                        </button>
-                        <button onClick={() => setDeletingCat(cat)} className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-100" aria-label="Delete">
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
+                      {cat.description && (
+                        <p className="mt-2 line-clamp-2 text-xs text-slate-500">{cat.description}</p>
+                      )}
                     </div>
-                    {cat.description && (
-                      <p className="mt-2 line-clamp-2 text-xs text-slate-500">{cat.description}</p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
         </div>
       </div>
 

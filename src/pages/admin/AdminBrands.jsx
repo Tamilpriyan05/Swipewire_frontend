@@ -104,19 +104,17 @@ export default function AdminBrands() {
       <div className="mb-6">
         <p className="text-xs font-bold uppercase tracking-[.2em] text-indigo-500">Catalogue</p>
         <h1 className="mt-1 text-2xl font-black text-slate-900">Brands</h1>
-        <p className="mt-1 text-sm text-slate-400">Manage product brands. Duplicate names are not allowed.</p>
+
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         {/* ── Add / Edit form (reused on page) ─────────────── */}
-        <div ref={formRef} className={`h-fit rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 ${
-          editingBrand ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200'
-        }`}>
+        <div ref={formRef} className={`h-fit rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 ${editingBrand ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200'
+          }`}>
           <div className="mb-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className={`rounded-xl p-2.5 transition ${
-                editingBrand ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-600'
-              }`}>
+              <span className={`rounded-xl p-2.5 transition ${editingBrand ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-600'
+                }`}>
                 {editingBrand ? <Pencil size={18} /> : <Tag size={18} />}
               </span>
               <div>
@@ -196,63 +194,60 @@ export default function AdminBrands() {
           </div>
 
           {brandsQ.isPending ? <Loading label="Loading brands…" /> :
-          brandsQ.isError ? (
-            <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
-              <AlertCircle size={16} />{getErrorMessage(brandsQ.error)}
-            </div>
-          ) : !brandsQ.data?.length ? (
-            <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">
-              No brands yet. Add your first brand using the form.
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {brandsQ.data.map((brand) => {
-                const isSelected = editingBrand?.id === brand.id;
-                return (
-                  <div
-                    key={brand.id}
-                    className={`group flex items-center justify-between rounded-xl border px-4 py-3 transition ${
-                      isSelected
-                        ? 'border-amber-300 bg-amber-50/60 ring-2 ring-amber-200'
-                        : 'border-slate-100 bg-slate-50 hover:border-indigo-100 hover:bg-indigo-50/40'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border text-sm font-black transition ${
-                        isSelected
-                          ? 'border-amber-300 bg-amber-100 text-amber-800'
-                          : 'border-slate-200 bg-white text-indigo-600'
-                      }`}>
-                        {brand.name.charAt(0).toUpperCase()}
-                      </span>
-                      <span className="font-semibold text-slate-800">{brand.name}</span>
-                    </div>
-                    <div className={`flex items-center gap-1 transition ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                      <button
-                        onClick={() => handleStartEdit(brand)}
-                        className={`rounded-lg p-2 transition ${
-                          isSelected
-                            ? 'bg-amber-500 text-white shadow-sm'
-                            : 'text-indigo-500 hover:bg-indigo-50'
+            brandsQ.isError ? (
+              <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
+                <AlertCircle size={16} />{getErrorMessage(brandsQ.error)}
+              </div>
+            ) : !brandsQ.data?.length ? (
+              <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">
+                No brands yet. Add your first brand using the form.
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {brandsQ.data.map((brand) => {
+                  const isSelected = editingBrand?.id === brand.id;
+                  return (
+                    <div
+                      key={brand.id}
+                      className={`group flex items-center justify-between rounded-xl border px-4 py-3 transition ${isSelected
+                          ? 'border-amber-300 bg-amber-50/60 ring-2 ring-amber-200'
+                          : 'border-slate-100 bg-slate-50 hover:border-indigo-100 hover:bg-indigo-50/40'
                         }`}
-                        aria-label={`Edit ${brand.name}`}
-                        title="Edit in form"
-                      >
-                        <Pencil size={15} />
-                      </button>
-                      <button
-                        onClick={() => setDeletingBrand(brand)}
-                        className="rounded-lg p-2 text-rose-500 hover:bg-rose-50"
-                        aria-label={`Delete ${brand.name}`}
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border text-sm font-black transition ${isSelected
+                            ? 'border-amber-300 bg-amber-100 text-amber-800'
+                            : 'border-slate-200 bg-white text-indigo-600'
+                          }`}>
+                          {brand.name.charAt(0).toUpperCase()}
+                        </span>
+                        <span className="font-semibold text-slate-800">{brand.name}</span>
+                      </div>
+                      <div className={`flex items-center gap-1 transition ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                        <button
+                          onClick={() => handleStartEdit(brand)}
+                          className={`rounded-lg p-2 transition ${isSelected
+                              ? 'bg-amber-500 text-white shadow-sm'
+                              : 'text-indigo-500 hover:bg-indigo-50'
+                            }`}
+                          aria-label={`Edit ${brand.name}`}
+                          title="Edit in form"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={() => setDeletingBrand(brand)}
+                          className="rounded-lg p-2 text-rose-500 hover:bg-rose-50"
+                          aria-label={`Delete ${brand.name}`}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
         </div>
       </div>
 

@@ -66,7 +66,7 @@ export default function AdminDashboard() {
       <div className="mb-6">
         <p className="text-xs font-bold uppercase tracking-[.2em] text-indigo-500">Overview</p>
         <h1 className="mt-1 text-2xl font-black text-slate-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-400">Real-time stats for your product catalogue.</p>
+
       </div>
 
       {loading ? (
@@ -75,10 +75,10 @@ export default function AdminDashboard() {
         <>
           {/* Stat cards */}
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard icon={Package}    label="Total Products" value={products.length}         sub={`${totalStock} units in inventory`}   accent="indigo"  />
-            <StatCard icon={Tag}        label="Brands"         value={brandsQ.data?.length}    sub="Unique brands catalogued"              accent="emerald" />
-            <StatCard icon={Layers}     label="Categories"     value={categoriesQ.data?.length} sub="Product categories"                  accent="amber"   />
-            <StatCard icon={TrendingUp} label="In Stock"       value={inStock}                 sub={`${outOfStock} product(s) out of stock`} accent="rose" />
+            <StatCard icon={Package} label="Total Products" value={products.length} sub={`${totalStock} units in inventory`} accent="indigo" />
+            <StatCard icon={Tag} label="Brands" value={brandsQ.data?.length} sub="Unique brands catalogued" accent="emerald" />
+            <StatCard icon={Layers} label="Categories" value={categoriesQ.data?.length} sub="Product categories" accent="amber" />
+            <StatCard icon={TrendingUp} label="In Stock" value={inStock} sub={`${outOfStock} product(s) out of stock`} accent="rose" />
           </div>
 
           {/* Stock breakdown */}
@@ -107,9 +107,8 @@ export default function AdminDashboard() {
                           <p className="text-sm font-semibold text-slate-800 line-clamp-1">{p.name}</p>
                           <p className="text-xs text-slate-400">{p.brand?.name} · {p.sku}</p>
                         </div>
-                        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${
-                          Number(p.stock) === 0 ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'
-                        }`}>
+                        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${Number(p.stock) === 0 ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'
+                          }`}>
                           {Number(p.stock) === 0 ? 'Out' : `${p.stock} left`}
                         </span>
                       </div>
@@ -182,9 +181,8 @@ export default function AdminDashboard() {
                         <td className="py-3 pr-4 text-slate-600">{p.category?.name || '—'}</td>
                         <td className="py-3 pr-4 font-semibold text-slate-800">₹{Number(p.price).toLocaleString('en-IN')}</td>
                         <td className="py-3">
-                          <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
-                            Number(p.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                          }`}>
+                          <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${Number(p.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                            }`}>
                             {Number(p.stock) > 0 ? `${p.stock} in stock` : 'Out'}
                           </span>
                         </td>

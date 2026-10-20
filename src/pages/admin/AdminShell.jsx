@@ -27,10 +27,10 @@ import AdminCategories from './AdminCategories';
 import AdminProducts from './AdminProducts';
 
 const NAV = [
-  { to: '/admin',             end: true,  icon: LayoutDashboard, label: 'Dashboard'  },
-  { to: '/admin/brands',      end: false, icon: Tag,             label: 'Brands'     },
-  { to: '/admin/categories',  end: false, icon: Layers,          label: 'Categories' },
-  { to: '/admin/products',    end: false, icon: Package,         label: 'Products'   },
+  { to: '/admin', end: true, icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/admin/brands', end: false, icon: Tag, label: 'Brands' },
+  { to: '/admin/categories', end: false, icon: Layers, label: 'Categories' },
+  { to: '/admin/products', end: false, icon: Package, label: 'Products' },
 ];
 
 export default function AdminShell() {
@@ -55,7 +55,7 @@ export default function AdminShell() {
         {!collapsed && (
           <div className="overflow-hidden">
             <p className="truncate text-sm font-black tracking-tight text-white">ProductHub</p>
-            <p className="truncate text-[10px] font-semibold uppercase tracking-widest text-indigo-300">Admin Panel</p>
+
           </div>
         )}
       </div>
@@ -69,10 +69,9 @@ export default function AdminShell() {
             end={end}
             onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
-              `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-150 ${
-                isActive
-                  ? 'bg-white text-indigo-700 shadow-md'
-                  : 'text-indigo-100 hover:bg-white/10 hover:text-white'
+              `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-150 ${isActive
+                ? 'bg-white text-indigo-700 shadow-md'
+                : 'text-indigo-100 hover:bg-white/10 hover:text-white'
               }`
             }
           >
@@ -110,9 +109,8 @@ export default function AdminShell() {
     <div className="flex h-screen overflow-hidden bg-slate-50">
       {/* ── Desktop sidebar ─────────────────────────────────────── */}
       <aside
-        className={`hidden lg:flex flex-col shrink-0 transition-all duration-300 bg-gradient-to-b from-indigo-900 via-indigo-800 to-indigo-900 ${
-          collapsed ? 'w-16' : 'w-60'
-        }`}
+        className={`hidden lg:flex flex-col shrink-0 transition-all duration-300 bg-gradient-to-b from-indigo-900 via-indigo-800 to-indigo-900 ${collapsed ? 'w-16' : 'w-60'
+          }`}
       >
         <SidebarContent />
         {/* Collapse toggle */}
@@ -147,7 +145,7 @@ export default function AdminShell() {
               <Menu size={20} />
             </button>
             <div>
-              <p className="text-sm font-bold text-slate-900">Admin Panel</p>
+
               <p className="text-xs text-slate-400">{user?.name || user?.email}</p>
             </div>
           </div>

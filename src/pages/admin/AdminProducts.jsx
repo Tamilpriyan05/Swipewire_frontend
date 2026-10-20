@@ -205,19 +205,17 @@ export default function AdminProducts() {
       <div className="mb-6">
         <p className="text-xs font-bold uppercase tracking-[.2em] text-indigo-500">Catalogue</p>
         <h1 className="mt-1 text-2xl font-black text-slate-900">Products</h1>
-        <p className="mt-1 text-sm text-slate-400">Add, edit, and manage products. Duplicate names are not allowed.</p>
+
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[380px_1fr]">
         {/* ── Add / Edit form (reused on page) ─────────────── */}
-        <div ref={formRef} className={`h-fit rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 ${
-          editingProduct ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200'
-        }`}>
+        <div ref={formRef} className={`h-fit rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 ${editingProduct ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200'
+          }`}>
           <div className="mb-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className={`rounded-xl p-2.5 transition ${
-                editingProduct ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-600'
-              }`}>
+              <span className={`rounded-xl p-2.5 transition ${editingProduct ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-600'
+                }`}>
                 {editingProduct ? <Pencil size={18} /> : <Package size={18} />}
               </span>
               <div>
@@ -344,92 +342,89 @@ export default function AdminProducts() {
           </div>
 
           {productsQ.isPending ? <Loading label="Loading products…" /> :
-          productsQ.isError ? (
-            <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
-              <AlertCircle size={16} />{getErrorMessage(productsQ.error)}
-              <button onClick={() => productsQ.refetch()} className="ml-2 font-bold underline">Retry</button>
-            </div>
-          ) : !filtered.length ? (
-            <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">
-              {search ? 'No products match your search.' : 'No products yet. Add your first product using the form.'}
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[580px] text-sm">
-                <thead>
-                  <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
-                    <th className="pb-3 pr-4 text-left font-semibold">Product</th>
-                    <th className="pb-3 pr-3 text-left font-semibold">Brand</th>
-                    <th className="pb-3 pr-3 text-left font-semibold">Price</th>
-                    <th className="pb-3 pr-3 text-left font-semibold">Stock</th>
-                    <th className="pb-3 text-right font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {filtered.map((p) => {
-                    const isSelected = editingProduct?.id === p.id;
-                    return (
-                      <tr
-                        key={p.id}
-                        className={`transition ${
-                          isSelected
-                            ? 'bg-amber-50/70 ring-1 ring-inset ring-amber-300'
-                            : 'hover:bg-slate-50/60'
-                        }`}
-                      >
-                        <td className="py-3 pr-4">
-                          <div className="flex items-center gap-3">
-                            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-slate-100">
-                              {p.imagePath
-                                ? <img src={imageUrl(p.imagePath)} alt={p.name} className="h-full w-full object-cover" />
-                                : <div className="flex h-full w-full items-center justify-center text-slate-300"><Package size={18} /></div>}
+            productsQ.isError ? (
+              <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-sm text-rose-700">
+                <AlertCircle size={16} />{getErrorMessage(productsQ.error)}
+                <button onClick={() => productsQ.refetch()} className="ml-2 font-bold underline">Retry</button>
+              </div>
+            ) : !filtered.length ? (
+              <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">
+                {search ? 'No products match your search.' : 'No products yet. Add your first product using the form.'}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[580px] text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+                      <th className="pb-3 pr-4 text-left font-semibold">Product</th>
+                      <th className="pb-3 pr-3 text-left font-semibold">Brand</th>
+                      <th className="pb-3 pr-3 text-left font-semibold">Price</th>
+                      <th className="pb-3 pr-3 text-left font-semibold">Stock</th>
+                      <th className="pb-3 text-right font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {filtered.map((p) => {
+                      const isSelected = editingProduct?.id === p.id;
+                      return (
+                        <tr
+                          key={p.id}
+                          className={`transition ${isSelected
+                              ? 'bg-amber-50/70 ring-1 ring-inset ring-amber-300'
+                              : 'hover:bg-slate-50/60'
+                            }`}
+                        >
+                          <td className="py-3 pr-4">
+                            <div className="flex items-center gap-3">
+                              <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                                {p.imagePath
+                                  ? <img src={imageUrl(p.imagePath)} alt={p.name} className="h-full w-full object-cover" />
+                                  : <div className="flex h-full w-full items-center justify-center text-slate-300"><Package size={18} /></div>}
+                              </div>
+                              <div>
+                                <p className="max-w-[160px] truncate font-semibold text-slate-800">{p.name}</p>
+                                <p className="text-xs text-slate-400">{p.sku}</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="max-w-[160px] truncate font-semibold text-slate-800">{p.name}</p>
-                              <p className="text-xs text-slate-400">{p.sku}</p>
+                          </td>
+                          <td className="py-3 pr-3 text-slate-600">{p.brand?.name || '—'}</td>
+                          <td className="py-3 pr-3 font-semibold text-slate-800">₹{Number(p.price).toLocaleString('en-IN')}</td>
+                          <td className="py-3 pr-3">
+                            <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${Number(p.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                              }`}>
+                              {Number(p.stock) > 0 ? p.stock : 'Out'}
+                            </span>
+                          </td>
+                          <td className="py-3 text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <button onClick={() => setViewProduct(p)}
+                                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label="View">
+                                <Eye size={15} />
+                              </button>
+                              <button
+                                onClick={() => handleStartEdit(p)}
+                                className={`rounded-lg p-2 transition ${isSelected
+                                    ? 'bg-amber-500 text-white shadow-sm'
+                                    : 'text-indigo-500 hover:bg-indigo-50'
+                                  }`}
+                                aria-label="Edit"
+                                title="Edit in form"
+                              >
+                                <Pencil size={15} />
+                              </button>
+                              <button onClick={() => setDeletingProduct(p)}
+                                className="rounded-lg p-2 text-rose-500 hover:bg-rose-50" aria-label="Delete">
+                                <Trash2 size={15} />
+                              </button>
                             </div>
-                          </div>
-                        </td>
-                        <td className="py-3 pr-3 text-slate-600">{p.brand?.name || '—'}</td>
-                        <td className="py-3 pr-3 font-semibold text-slate-800">₹{Number(p.price).toLocaleString('en-IN')}</td>
-                        <td className="py-3 pr-3">
-                          <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
-                            Number(p.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                          }`}>
-                            {Number(p.stock) > 0 ? p.stock : 'Out'}
-                          </span>
-                        </td>
-                        <td className="py-3 text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <button onClick={() => setViewProduct(p)}
-                              className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label="View">
-                              <Eye size={15} />
-                            </button>
-                            <button
-                              onClick={() => handleStartEdit(p)}
-                              className={`rounded-lg p-2 transition ${
-                                isSelected
-                                  ? 'bg-amber-500 text-white shadow-sm'
-                                  : 'text-indigo-500 hover:bg-indigo-50'
-                              }`}
-                              aria-label="Edit"
-                              title="Edit in form"
-                            >
-                              <Pencil size={15} />
-                            </button>
-                            <button onClick={() => setDeletingProduct(p)}
-                              className="rounded-lg p-2 text-rose-500 hover:bg-rose-50" aria-label="Delete">
-                              <Trash2 size={15} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
         </div>
       </div>
 
@@ -462,9 +457,8 @@ export default function AdminProducts() {
                 </div>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Stock</p>
-                  <span className={`mt-0.5 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                    Number(viewProduct.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                  }`}>
+                  <span className={`mt-0.5 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${Number(viewProduct.stock) > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+                    }`}>
                     {Number(viewProduct.stock) > 0 ? `${viewProduct.stock} units` : 'Out of stock'}
                   </span>
                 </div>

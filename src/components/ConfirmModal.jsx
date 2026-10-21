@@ -1,15 +1,4 @@
-/**
- * ConfirmModal — beautiful confirmation dialog. No browser alert().
- * Props:
- *   open      boolean
- *   onClose   () => void
- *   onConfirm () => void
- *   title     string
- *   message   string
- *   confirmLabel  string   (default 'Delete')
- *   variant   'danger' | 'warning'  (default 'danger')
- *   loading   boolean
- */
+
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import Modal from './Modal';
 
@@ -26,7 +15,7 @@ export default function ConfirmModal({
   return (
     <Modal open={open} onClose={onClose} title="" size="sm">
       <div className="flex flex-col items-center text-center">
-        {/* Icon */}
+        
         <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-full ${
           isDanger ? 'bg-rose-100' : 'bg-amber-100'
         }`}>

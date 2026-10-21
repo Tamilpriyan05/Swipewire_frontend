@@ -1,12 +1,4 @@
-/**
- * Reusable Modal wrapper — renders children in a centred overlay.
- * Props:
- *   open       boolean
- *   onClose    () => void
- *   title      string
- *   size       'sm' | 'md' | 'lg' | 'xl'  (default 'md')
- *   children   ReactNode
- */
+
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
 

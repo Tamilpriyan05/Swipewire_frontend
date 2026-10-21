@@ -1,12 +1,15 @@
 import { Inbox } from 'lucide-react';
 
-export default function EmptyState({ message, icon: Icon = Inbox, className = '' }) {
+export default function EmptyState({ message, icon: Icon = Inbox, action, className = '' }) {
   return (
     <div
-      className={`rounded-xl border border-dashed border-slate-300 p-8 sm:p-10 text-center text-sm text-slate-400 ${className}`}
+      className={`flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300/80 bg-white/70 p-10 sm:p-14 text-center backdrop-blur-xs ${className}`}
     >
-      <Icon size={28} className="mx-auto mb-2 text-slate-300" />
-      <p>{message}</p>
+      <div className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50/80 text-indigo-600 ring-8 ring-indigo-50/40">
+        <Icon size={26} strokeWidth={1.8} />
+      </div>
+      <p className="max-w-md text-sm font-medium text-slate-600 leading-relaxed">{message}</p>
+      {action && <div className="mt-4">{action}</div>}
     </div>
   );
 }

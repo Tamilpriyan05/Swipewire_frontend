@@ -9,7 +9,6 @@
 import { useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import {
-  Boxes,
   ChevronLeft,
   ExternalLink,
   LayoutDashboard,
@@ -22,6 +21,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import BrandIcon from '../../components/BrandIcon';
 import AdminDashboard from './AdminDashboard';
 import AdminBrands from './AdminBrands';
 import AdminCategories from './AdminCategories';
@@ -50,19 +50,21 @@ export default function AdminShell() {
     <div className="flex h-full flex-col">
       {/* Brand Header */}
       <div className="flex h-16 shrink-0 items-center justify-between border-b border-indigo-700/40 px-4">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white">
-            <Boxes size={20} />
+        <Link to="/admin" className="group flex items-center gap-3 overflow-hidden">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-500 via-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-950/40 transition-transform duration-200 group-hover:scale-105">
+            <BrandIcon size={20} className="text-white" />
           </span>
           {(!collapsed || isMobile) && (
-            <div className="overflow-hidden">
-              <p className="truncate text-sm font-black tracking-tight text-white">ProductHub</p>
-              <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-indigo-200">
-                Admin
+            <div className="overflow-hidden text-left">
+              <p className="truncate text-sm font-black tracking-tight text-white leading-tight">
+                Swipe<span className="text-indigo-300">Wire</span>
+              </p>
+              <p className="truncate text-[10px] font-bold uppercase tracking-wider text-indigo-200 leading-tight">
+                Admin Console
               </p>
             </div>
           )}
-        </div>
+        </Link>
         {isMobile && (
           <button
             onClick={() => setMobileOpen(false)}

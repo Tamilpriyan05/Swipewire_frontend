@@ -9,7 +9,6 @@ import {
   Lock,
   Eye,
   EyeOff,
-  Boxes,
   ShieldCheck,
   CheckCircle2,
   Sparkles,
@@ -17,6 +16,7 @@ import {
 } from 'lucide-react';
 import api, { getErrorMessage } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
+import BrandIcon from '../components/BrandIcon';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -50,8 +50,8 @@ export default function Register() {
 
           <div className="relative z-10">
             <Link to="/" className="inline-flex items-center gap-2.5 font-bold tracking-tight text-white">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md">
-                <Boxes size={20} />
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white shadow-md">
+                <BrandIcon size={20} className="text-white" />
               </div>
               <span className="text-lg font-black tracking-tight">
                 Swipe<span className="text-indigo-400">Wire</span>

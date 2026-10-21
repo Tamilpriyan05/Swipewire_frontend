@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
-  Boxes,
   LogIn,
   LogOut,
   ShieldCheck,
-  Menu,
-  X,
   Sparkles,
   ShoppingBag,
   ArrowRight,
@@ -19,6 +16,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import BrandIcon from './BrandIcon';
 
 export default function Layout({ children }) {
   const { user, signOut, isAdmin } = useAuth();
@@ -55,8 +53,8 @@ export default function Layout({ children }) {
             onClick={() => setMobileMenuOpen(false)}
             className="group flex items-center gap-3 font-extrabold tracking-tight text-slate-900"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 text-white shadow-md shadow-indigo-500/25 transition-transform duration-300 group-hover:scale-105">
-              <Boxes size={22} strokeWidth={2.2} />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/25 transition-transform duration-300 group-hover:scale-105">
+              <BrandIcon size={22} className="text-white" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-black tracking-tight leading-none text-slate-900">
@@ -153,10 +151,24 @@ export default function Layout({ children }) {
             )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-xs transition-colors hover:bg-slate-50"
+              className="relative flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 shadow-xs transition-all hover:bg-slate-50 focus:outline-none"
               aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              <span
+                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${
+                  mobileMenuOpen ? 'translate-y-2 rotate-45' : ''
+                }`}
+              />
+              <span
+                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${
+                  mobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                }`}
+              />
+              <span
+                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${
+                  mobileMenuOpen ? '-translate-y-2 -rotate-45' : ''
+                }`}
+              />
             </button>
           </div>
         </div>
@@ -295,8 +307,8 @@ export default function Layout({ children }) {
             {/* Brand column */}
             <div className="md:col-span-2 lg:col-span-2">
               <Link to="/" className="flex items-center gap-2.5 font-black text-slate-900">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
-                  <Boxes size={20} />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white shadow-xs">
+                  <BrandIcon size={18} className="text-white" />
                 </div>
                 <span className="text-xl font-black tracking-tight">
                   Swipe<span className="text-indigo-600">Wire</span>

@@ -54,7 +54,7 @@ export default function Register() {
                 <BrandIcon size={20} className="text-white" />
               </div>
               <span className="text-lg font-black tracking-tight">
-                Swipe<span className="text-indigo-400">Wire</span>
+                Nova<span className="text-indigo-400">Cart</span>
               </span>
             </Link>
 

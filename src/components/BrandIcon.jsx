@@ -6,17 +6,17 @@ export default function BrandIcon({ className = 'h-5 w-5', size = 20 }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.4"
+      strokeWidth="2.2"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
       aria-hidden="true"
     >
-      {/* Dynamic S wire path representing SwipeWire */}
-      <path d="M18 5H10a3.5 3.5 0 0 0-3.5 3.5 3.5 3.5 0 0 0 3.5 3.5h4a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5H6" />
-      <circle cx="18" cy="5" r="1.8" fill="currentColor" />
-      <circle cx="6" cy="19" r="1.8" fill="currentColor" />
-      <circle cx="12" cy="12" r="1.2" fill="currentColor" />
+      {/* Modern NovaCart emblem: Sleek dynamic cart with energy spark */}
+      <path d="M2.5 3h3l2.4 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.95-1.55l1.65-6.65H6.2" />
+      <circle cx="10" cy="19.5" r="1.5" fill="currentColor" />
+      <circle cx="17.5" cy="19.5" r="1.5" fill="currentColor" />
+      <path d="M14 6l1.8 1.8 3.2-3.2" strokeWidth="2" />
     </svg>
   );
 }

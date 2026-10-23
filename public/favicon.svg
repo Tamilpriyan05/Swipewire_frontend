@@ -20,17 +20,15 @@
   <!-- Inner border highlight -->
   <rect x="5" y="5" width="54" height="54" rx="15" stroke="rgba(255,255,255,0.25)" stroke-width="2" />
 
-  <!-- SwipeWire emblem (Dynamic stylized S wire) -->
+  <!-- NovaCart emblem (Sleek cart with spark) -->
   <path
-    d="M44 20H26C21.5817 20 18 23.5817 18 28C18 32.4183 21.5817 36 26 36H38C42.4183 36 46 39.5817 46 44C46 48.4183 42.4183 52 38 52H20"
+    d="M16 18H23L27.5 39C27.9 41 29.7 42.5 31.8 42.5H45C47.1 42.5 48.9 41 49.3 39L53 25H25"
     stroke="url(#sw-wire)"
-    stroke-width="5"
+    stroke-width="4.5"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
-
-  <!-- Interactive signal nodes / dots -->
-  <circle cx="44" cy="20" r="3.5" fill="#38bdf8" />
-  <circle cx="20" cy="52" r="3.5" fill="#a78bfa" />
-  <circle cx="32" cy="36" r="2.5" fill="#ffffff" />
+  <circle cx="33" cy="49" r="3.5" fill="#ffffff" />
+  <circle cx="46" cy="49" r="3.5" fill="#38bdf8" />
+  <path d="M38 17L41.5 20.5L47.5 14.5" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
 </svg>

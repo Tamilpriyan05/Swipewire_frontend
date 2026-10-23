@@ -57,7 +57,7 @@ export default function AdminShell() {
           {(!collapsed || isMobile) && (
             <div className="overflow-hidden text-left">
               <p className="truncate text-sm font-black tracking-tight text-white leading-tight">
-                Swipe<span className="text-indigo-300">Wire</span>
+                Nova<span className="text-indigo-300">Cart</span>
               </p>
               <p className="truncate text-[10px] font-bold uppercase tracking-wider text-indigo-200 leading-tight">
                 Admin Console

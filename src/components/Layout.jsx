@@ -58,7 +58,7 @@ export default function Layout({ children }) {
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-black tracking-tight leading-none text-slate-900">
-                Swipe<span className="text-indigo-600">Wire</span>
+                Nova<span className="text-indigo-600">Cart</span>
               </span>
               <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 leading-tight">
                 Store & Catalogue
@@ -324,7 +324,7 @@ export default function Layout({ children }) {
                   <BrandIcon size={18} className="text-white" />
                 </div>
                 <span className="text-xl font-black tracking-tight">
-                  Swipe<span className="text-indigo-600">Wire</span>
+                  Nova<span className="text-indigo-600">Cart</span>
                 </span>
               </Link>
               <p className="mt-3.5 max-w-sm text-sm leading-relaxed text-slate-500">
@@ -382,7 +382,7 @@ export default function Layout({ children }) {
 
           {/* Bottom Copyright */}
           <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-slate-100 pt-8 text-xs text-slate-400 sm:flex-row">
-            <p>© {new Date().getFullYear()} SwipeWire Product Catalogue. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} NovaCart Product Catalogue. All rights reserved.</p>
             <div className="flex items-center gap-4">
 
             </div>

@@ -53,12 +53,13 @@ export default function App() {
           />
 
           {/* ── Admin routes (standalone sidebar layout, no header/footer) ── */}
+
           <Route
             path="/admin/*"
             element={
-              <RequireAdmin>
-                <AdminShell />
-              </RequireAdmin>
+              // <RequireAdmin>
+              <AdminShell />
+              // </RequireAdmin>
             }
           />
 

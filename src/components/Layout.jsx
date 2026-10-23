@@ -42,12 +42,12 @@ export default function Layout({ children }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 selection:bg-indigo-600 selection:text-white">
-    
 
-     
+
+
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl transition-all">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
-         
+
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
@@ -66,23 +66,22 @@ export default function Layout({ children }) {
             </div>
           </Link>
 
-        
+
           <nav className="hidden md:flex items-center gap-1.5 text-sm font-semibold">
             <NavLink
               to="/"
               end
               className={({ isActive }) =>
-                `rounded-xl px-4 py-2 transition-all ${
-                  isActive
-                    ? 'bg-indigo-50 text-indigo-700 shadow-xs font-bold'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                `rounded-xl px-4 py-2 transition-all ${isActive
+                  ? 'bg-indigo-50 text-indigo-700 shadow-xs font-bold'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`
               }
             >
               Browse Catalogue
             </NavLink>
 
-            {isAdmin && (
+            {/* {isAdmin && (
               <Link
                 to="/admin"
                 className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 px-3.5 py-2 text-indigo-700 shadow-xs transition-all hover:bg-indigo-100"
@@ -90,11 +89,21 @@ export default function Layout({ children }) {
                 <ShieldCheck size={16} className="text-indigo-600" />
                 <span>Admin Console</span>
               </Link>
-            )}
+            )} */}
+
+            <Link
+              to="/admin"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 px-3.5 py-2 text-indigo-700 shadow-xs transition-all hover:bg-indigo-100"
+            >
+              <ShieldCheck size={16} className="text-indigo-600" />
+              <span>Admin Console</span>
+            </Link>
+
+
           </nav>
 
-          
-          <div className="hidden md:flex items-center gap-3">
+
+          {/* <div className="hidden md:flex items-center gap-3">
             {user ? (
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2.5 rounded-xl border border-slate-200/90 bg-slate-50 px-3 py-1.5 shadow-2xs">
@@ -137,37 +146,42 @@ export default function Layout({ children }) {
                 </Link>
               </div>
             )}
-          </div>
+          </div> */}
 
-         
+
           <div className="flex items-center gap-2 md:hidden">
-            {isAdmin && (
+            {/* {isAdmin && (
               <Link
                 to="/admin"
                 className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-2.5 py-1.5 text-xs font-bold text-indigo-700 border border-indigo-200"
               >
                 <ShieldCheck size={14} /> Admin
               </Link>
-            )}
+            )} */}
+
+            <Link
+              to="/admin"
+              className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-2.5 py-1.5 text-xs font-bold text-indigo-700 border border-indigo-200"
+            >
+              <ShieldCheck size={14} /> Admin
+            </Link>
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="relative flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200/90 bg-white text-slate-700 shadow-xs transition-all hover:bg-slate-50 focus:outline-none"
               aria-label="Toggle Navigation Menu"
             >
               <span
-                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${
-                  mobileMenuOpen ? 'translate-y-2 rotate-45' : ''
-                }`}
+                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'translate-y-2 rotate-45' : ''
+                  }`}
               />
               <span
-                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${
-                  mobileMenuOpen ? 'opacity-0' : 'opacity-100'
-                }`}
+                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                  }`}
               />
               <span
-                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${
-                  mobileMenuOpen ? '-translate-y-2 -rotate-45' : ''
-                }`}
+                className={`h-0.5 w-5 rounded-full bg-slate-800 transition-all duration-300 ease-in-out ${mobileMenuOpen ? '-translate-y-2 -rotate-45' : ''
+                  }`}
               />
             </button>
           </div>
@@ -182,8 +196,7 @@ export default function Layout({ children }) {
                 end
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold ${
-                    isActive ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-50'
+                  `flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold ${isActive ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-50'
                   }`
                 }
               >
@@ -247,14 +260,14 @@ export default function Layout({ children }) {
         )}
       </header>
 
-      
+
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         {children}
       </main>
 
- 
+
       <footer className="mt-16 border-t border-slate-200/90 bg-white">
-      
+
         <div className="border-b border-slate-100 bg-slate-50/50">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
@@ -301,7 +314,7 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        
+
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-4 lg:grid-cols-5">
             {/* Brand column */}
@@ -352,7 +365,7 @@ export default function Layout({ children }) {
                     <li><Link to="/register" className="hover:text-indigo-600 transition-colors">Create Account</Link></li>
                   </>
                 )}
-             
+
               </ul>
             </div>
 
@@ -371,7 +384,7 @@ export default function Layout({ children }) {
           <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-slate-100 pt-8 text-xs text-slate-400 sm:flex-row">
             <p>© {new Date().getFullYear()} SwipeWire Product Catalogue. All rights reserved.</p>
             <div className="flex items-center gap-4">
-            
+
             </div>
           </div>
         </div>

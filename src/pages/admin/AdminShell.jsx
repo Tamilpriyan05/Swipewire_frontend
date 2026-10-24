@@ -116,13 +116,13 @@ export default function AdminShell() {
           <ExternalLink size={16} className="shrink-0" />
           {(!collapsed || isMobile) && <span className="truncate">View Store</span>}
         </Link>
-        <button
+        {/* <button
           onClick={logout}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-indigo-200 transition hover:bg-rose-500/20 hover:text-rose-300"
         >
           <LogOut size={16} className="shrink-0" />
           {(!collapsed || isMobile) && <span className="truncate">Sign out</span>}
-        </button>
+        </button> */}
       </div>
     </div>
   );
@@ -190,13 +190,13 @@ export default function AdminShell() {
                 {user.role.toUpperCase()}
               </span>
             )}
-            <button
+            {/* <button
               onClick={logout}
               className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
             >
               <LogOut size={14} />
               <span className="hidden sm:inline">Logout</span>
-            </button>
+            </button> */}
           </div>
         </header>
 
